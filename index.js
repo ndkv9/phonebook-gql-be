@@ -48,6 +48,14 @@ const resolvers = {
 		allPersons: () => persons,
 		findPerson: (root, args) => persons.find(p => p.name === args.name),
 	},
+	Person: {
+		address: root => {
+			return {
+				street: root.street,
+				city: root.city,
+			}
+		},
+	},
 }
 
 const server = new ApolloServer({ typeDefs, resolvers })
