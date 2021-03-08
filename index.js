@@ -24,11 +24,15 @@ let persons = [
 ]
 
 const typeDefs = gql`
+	type Address {
+		street: String!
+		city: String!
+	}
+
 	type Person {
 		name: String!
 		phone: String
-		street: String!
-		city: String!
+		address: Address!
 		id: ID!
 	}
 
