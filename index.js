@@ -92,7 +92,7 @@ const resolvers = {
 			persons = persons.concat(person)
 			return person
 		},
-		editNumbered: (root, args) => {
+		editNumber: (root, args) => {
 			const person = persons.find(p => p.name === args.name)
 			if (!person) {
 				return null
