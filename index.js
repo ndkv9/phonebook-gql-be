@@ -1,7 +1,6 @@
 const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const mongoose = require('mongoose')
 const Person = require('./models/person')
-const { v1: uuid } = require('uuid')
 
 const MONGODB_URI =
 	'mongodb+srv://user1:D3thoima101@cluster0.ytd9u.mongodb.net/graphql?retryWrites=true&w=majority'
@@ -60,8 +59,11 @@ const resolvers = {
 	Query: {
 		personCount: () => Person.collection.countDocuments(),
 		allPersons: (root, args) => {
-			//filter missing
-			return Person.find({})
+			if (!args.phone) {
+				return Person.find({})
+			}
+
+			return Person.find({ phone: { $exist: args.phone === 'YES' } })
 		},
 		findPerson: (root, args) => Person.findOne({ name: args.name }),
 	},
@@ -74,14 +76,28 @@ const resolvers = {
 		},
 	},
 	Mutation: {
-		addPerson: (root, args) => {
+		addPerson: async (root, args) => {
 			const person = new Person({ ...args })
-			return person.save()
+
+			try {
+				await person.save()
+			} catch (error) {
+				throw new UserInputError(error.message, { invalidArgs: args })
+			}
+
+			return person
 		},
 		editNumber: async (root, args) => {
 			const person = await Person.findOne({ name: args.name })
 			person.phone = args.phone
-			return person.save()
+
+			try {
+				await person.save()
+			} catch (error) {
+				throw new UserInputError(error.message, { invalidArgs: args })
+			}
+
+			return person
 		},
 	},
 }
