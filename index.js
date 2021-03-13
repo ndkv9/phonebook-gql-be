@@ -1,6 +1,8 @@
 const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const mongoose = require('mongoose')
 const Person = require('./models/person')
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY'
 
 const MONGODB_URI =
 	'mongodb+srv://user1:D3thoima101@cluster0.ytd9u.mongodb.net/graphql?retryWrites=true&w=majority'
@@ -22,6 +24,16 @@ mongoose
 	})
 
 const typeDefs = gql`
+	type User {
+		username: String!
+		friends: [Person!]!
+		id: ID!
+	}
+
+	type Token {
+		value: String!
+	}
+
 	type Address {
 		street: String!
 		city: String!
@@ -43,6 +55,7 @@ const typeDefs = gql`
 		personCount: Int!
 		allPersons(phone: YesNo): [Person!]!
 		findPerson(name: String!): Person
+		me: User
 	}
 
 	type Mutation {
@@ -53,6 +66,8 @@ const typeDefs = gql`
 			city: String!
 		): Person
 		editNumber(name: String!, phone: String!): Person
+		createUser(username: String!): User
+		login(username: String!, password: String!): Token
 	}
 `
 const resolvers = {
