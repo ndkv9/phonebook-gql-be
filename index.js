@@ -6,6 +6,7 @@ const {
 } = require('apollo-server')
 const mongoose = require('mongoose')
 const Person = require('./models/person')
+const User = require('./models/user')
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY'
 
